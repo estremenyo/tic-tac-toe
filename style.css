@@ -1,0 +1,33 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: grid;
+    justify-items: center;
+}
+
+main {
+    margin-top: 5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-content: center;
+    width: 500px;
+    flex-wrap: wrap;
+    outline: 5px solid black;
+}
+
+main > * {
+    width: 166.6px;
+    height: 166.6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: 2px solid red;
+}
+
+main > button {
+    width: 100%;
+}
