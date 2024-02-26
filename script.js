@@ -2,7 +2,7 @@ const Model = (function() {
     const players = (function() {
         const players = [];
         for (let i = 1; i <= 2; i++) {
-            const player = {score: 0, isTurn: false, hasWon: false};
+            const player = {score: 0, isTurn: false, hasWon: false, name: undefined};
             players[i] = player;
         }
         return players;
@@ -52,6 +52,44 @@ const Controller = (function() {
         divArray.forEach(div => addEventListener("click", handleClick));
     })();
 
+    const initializeRestartBtn = (function () {
+        let btn = document.querySelector("button#reset");
+        function reset() {
+            if (Model.getPlayer(2).isTurn) updateTurn();
+            let divNodeList = document.querySelectorAll("div");
+            let divArray = Array.from(divNodeList);
+            divArray.forEach(div => div.textContent = "");
+            const board = Model.getBoard();
+            Model.getPlayer(1).name = undefined;
+            Model.getPlayer(2).name = undefined;
+            board.forEach(row => {
+                row.forEach(cell => {
+                    cell = undefined;
+                })
+            })
+            document.querySelector("input#player1").disabled = false;
+            document.querySelector("input#player2").disabled = false;
+            document.querySelector("input#player1").value = "";
+            document.querySelector("input#player2").value = "";
+        }
+        btn.addEventListener("click", reset);
+    })();
+
+    const initializeStartBtn = (function () {
+        let btn = document.querySelector("button#play");
+        btn.addEventListener("click", () => {
+            let p1NameInput = document.querySelector("input#player1");
+            let p2NameInput = document.querySelector("input#player2");
+
+
+            Model.getPlayer(1).name = p1NameInput.value;
+            Model.getPlayer(2).name = p2NameInput.value;
+
+            p1NameInput.disabled = true;
+            p2NameInput.disabled = true;
+        })
+    })();
+
     function removeEventListeners() {
         let divNodeList = document.querySelectorAll("div");
         let divArray = Array.from(divNodeList);
@@ -65,8 +103,9 @@ const Controller = (function() {
             updateBoard(currentPlayerTurn, e.target);
             if (checkWinner()) {
                 removeEventListeners();
-                if (Model.isTie) alert("It's a tie");
-                else alert(`Player ${currentPlayerTurn} has won`);
+                let result = document.querySelector("p");
+                if (Model.isTie) result.textContent = ("It's a tie");
+                else result.textContent = (`Player ${currentPlayerTurn === 1 ? Model.getPlayer(1).name : Model.getPlayer(2).name} has won`);
                 return;
             }
             updateTurn();
