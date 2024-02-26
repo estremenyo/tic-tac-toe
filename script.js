@@ -30,6 +30,7 @@ const View = (function() {
             let div = document.createElement("div");
             div.dataset.row = i;
             div.dataset.col = j;
+            div.classList.toggle("disabled");
             document.querySelector("main").appendChild(div);
         }
     }
@@ -46,11 +47,11 @@ const Controller = (function() {
         Model.getPlayer(2).isTurn = Model.getPlayer(2).isTurn ? false : true;
     }
     
-    const initializeCells = (function() {
+    const initializeCells = function() {
         let divNodeList = document.querySelectorAll("div");
         let divArray = Array.from(divNodeList);
         divArray.forEach(div => addEventListener("click", handleClick));
-    })();
+    };
 
     const initializeRestartBtn = (function () {
         let btn = document.querySelector("button#reset");
@@ -59,18 +60,23 @@ const Controller = (function() {
             let divNodeList = document.querySelectorAll("div");
             let divArray = Array.from(divNodeList);
             divArray.forEach(div => div.textContent = "");
+            divArray.forEach(div => addEventListener("click", handleClick));
+            divArray.forEach(div => div.classList.toggle("disabled"));
             const board = Model.getBoard();
             Model.getPlayer(1).name = undefined;
             Model.getPlayer(2).name = undefined;
-            board.forEach(row => {
-                row.forEach(cell => {
-                    cell = undefined;
-                })
-            })
+            Model.getPlayer(1).hasWon = false;
+            Model.getPlayer(2).hasWon = false;
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    board[row][col] = undefined;
+                }
+            }
             document.querySelector("input#player1").disabled = false;
             document.querySelector("input#player2").disabled = false;
             document.querySelector("input#player1").value = "";
             document.querySelector("input#player2").value = "";
+            document.querySelector("p").textContent = "Type in player names and press start to start";
         }
         btn.addEventListener("click", reset);
     })();
@@ -87,6 +93,10 @@ const Controller = (function() {
 
             p1NameInput.disabled = true;
             p2NameInput.disabled = true;
+            let divNodeList = document.querySelectorAll("div");
+            let divArray = Array.from(divNodeList);
+            divArray.forEach(div => div.classList.toggle("disabled"));
+            initializeCells();
         })
     })();
 
